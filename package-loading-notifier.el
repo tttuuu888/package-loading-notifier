@@ -1,9 +1,10 @@
-;;; package-loading-notifier.el --- Notify a package is being loaded -*- lexical-binding: t -*-
+;;; package-loading-notifier.el --- Notify a package is being loaded -*- lexical-binding: t; -*-
 
 ;; Author: SeungKi Kim <tttuuu888@gmail.com>
 ;; URL: https://github.com/tttuuu888/package-loading-notifier
 ;; Version: 0.1.0
-;; Keywords: package config startup
+;; Keywords: convenience faces config startup
+;; Package-Requires: ((emacs "25"))
 
 ;; This file is not part of GNU Emacs
 
@@ -54,7 +55,7 @@ replaced by the package name."
   "Face used to notify a package is being loaded."
   :group 'package-loading-notifier)
 
-(defun package-loading-notify--notify (pkg old &rest r)
+(defun package-loading-notifier--notify (pkg old &rest r)
   (let ((msg (capitalize (format package-loading-notifier-format pkg)))
         (ovr (make-overlay (point) (point))))
     (when (fboundp 'company-cancel) (company-cancel))
@@ -70,12 +71,12 @@ replaced by the package name."
       (delete-overlay ovr)
       ret)))
 
-(defun package-loading-notify--require (old pkg &rest r)
+(defun package-loading-notifier--require (old pkg &rest r)
   (if (not (member pkg package-loading-notifier-packages))
       (apply old pkg r)
-    (package-loading-notify--notify pkg old pkg r)))
+    (package-loading-notifier--notify pkg old pkg r)))
 
-(defun package-loading-notify--find-file (old file-name &rest r)
+(defun package-loading-notifier--find-file (old file-name &rest r)
   (let* ((mode
           (when (stringp file-name)
             (let ((ret (assoc-default file-name auto-mode-alist 'string-match)))
@@ -85,7 +86,7 @@ replaced by the package name."
             (intern (string-remove-suffix "-mode" mode)))))
     (if (not (member pkg package-loading-notifier-packages))
         (apply old file-name r)
-      (package-loading-notify--notify pkg old file-name r))))
+      (package-loading-notifier--notify pkg old file-name r))))
 
 ;;;###autoload
 (define-minor-mode package-loading-notifier-mode
@@ -94,10 +95,10 @@ replaced by the package name."
   :global t
   (if package-loading-notifier-mode
       (progn
-        (advice-add 'require :around #'package-loading-notify--require)
-        (advice-add 'find-file-noselect :around #'package-loading-notify--find-file))
-    (advice-remove 'require #'package-loading-notify--require)
-    (advice-remove 'find-file-noselect #'package-loading-notify--find-file)))
+        (advice-add 'require :around #'package-loading-notifier--require)
+        (advice-add 'find-file-noselect :around #'package-loading-notifier--find-file))
+    (advice-remove 'require #'package-loading-notifier--require)
+    (advice-remove 'find-file-noselect #'package-loading-notifier--find-file)))
 
 (provide 'package-loading-notifier)
 ;;; package-loading-notifier.el ends here
