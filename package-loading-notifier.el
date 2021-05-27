@@ -45,8 +45,8 @@
   :group 'package-loading-notifier)
 
 (defcustom package-loading-notifier-format "%s loading ..."
-  "String format to notify a package is being loaded. `%s' is
-replaced by the package name."
+  "String format to notify a package is being loaded.
+`%s' is replaced by the package name."
   :type 'string
   :group 'package-loading-notifier)
 
@@ -56,6 +56,7 @@ replaced by the package name."
   :group 'package-loading-notifier)
 
 (defun package-loading-notifier--notify (pkg old &rest r)
+  "Notify a PKG is being loaded and execute OLD with rest arguments R."
   (let ((msg (capitalize (format package-loading-notifier-format pkg)))
         (ovr (make-overlay (point) (point))))
     (when (fboundp 'company-cancel) (company-cancel))
@@ -72,11 +73,18 @@ replaced by the package name."
       ret)))
 
 (defun package-loading-notifier--require (old pkg &rest r)
+  "Notifier for `require' function.
+If PKG is not a member of `package-loading-notifier-packages',
+just execute OLD with rest arguments R."
   (if (not (member pkg package-loading-notifier-packages))
       (apply old pkg r)
     (package-loading-notifier--notify pkg old pkg r)))
 
 (defun package-loading-notifier--find-file (old file-name &rest r)
+  "Notifier for all kind of `find-file' functions.
+If the package is not a member of
+`package-loading-notifier-packages', just execute OLD with
+FILE-NAME and rest arguments R."
   (let* ((mode
           (when (stringp file-name)
             (let ((ret (assoc-default file-name auto-mode-alist 'string-match)))
