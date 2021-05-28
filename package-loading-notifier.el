@@ -72,20 +72,23 @@
       (delete-overlay ovr)
       ret)))
 
-(defun package-loading-notifier--require (old pkg &rest r)
+(defun package-loading-notifier--require (old &rest r)
   "Notifier for `require' function.
-If PKG is not a member of `package-loading-notifier-packages',
-just execute OLD with rest arguments R."
-  (if (not (member pkg package-loading-notifier-packages))
-      (apply old pkg r)
-    (package-loading-notifier--notify pkg old pkg r)))
+If the package is not a member of
+`package-loading-notifier-packages', just execute OLD with rest
+arguments R."
+  (let ((pkg (car r)))
+    (if (not (member pkg package-loading-notifier-packages))
+        (apply old r)
+      (apply #'package-loading-notifier--notify pkg old r))))
 
-(defun package-loading-notifier--find-file (old file-name &rest r)
+(defun package-loading-notifier--find-file (old &rest r)
   "Notifier for all kind of `find-file' functions.
 If the package is not a member of
-`package-loading-notifier-packages', just execute OLD with
-FILE-NAME and rest arguments R."
-  (let* ((mode
+`package-loading-notifier-packages', just execute OLD with rest
+arguments R."
+  (let* ((file-name (car r))
+         (mode
           (when (stringp file-name)
             (let ((ret (assoc-default file-name auto-mode-alist 'string-match)))
               (and (symbolp ret) (symbol-name ret)))))
@@ -93,8 +96,8 @@ FILE-NAME and rest arguments R."
           (when mode
             (intern (string-remove-suffix "-mode" mode)))))
     (if (not (member pkg package-loading-notifier-packages))
-        (apply old file-name r)
-      (package-loading-notifier--notify pkg old file-name r))))
+        (apply old r)
+      (apply #'package-loading-notifier--notify pkg old r))))
 
 ;;;###autoload
 (define-minor-mode package-loading-notifier-mode
