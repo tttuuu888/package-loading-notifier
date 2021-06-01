@@ -22,7 +22,7 @@
 ;; <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;;
+
 ;; To enable `package-loading-notifier' globally, add the following lines to
 ;; your .emacs:
 ;;
