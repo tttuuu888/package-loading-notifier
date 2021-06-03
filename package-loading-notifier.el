@@ -1,7 +1,5 @@
 ;;; package-loading-notifier.el --- Notify a package is being loaded -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 SeungKi Kim
-
 ;; Author: SeungKi Kim <tttuuu888@gmail.com>
 ;; URL: https://github.com/tttuuu888/package-loading-notifier
 ;; Version: 0.1.0
