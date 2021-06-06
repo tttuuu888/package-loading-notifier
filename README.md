@@ -5,7 +5,7 @@
 
 ![demo](https://gist.github.com/tttuuu888/267a8a56c207d725ea999e353646eec9/raw/b960dfcf9ac1e8c9330d9385368fcd4a2cfdc981/package-loading-notice.gif)
 
-# installation
+# Installation
 
 `package-loading-notifier` can be installed through [MELPA](https://melpa.org).
 
