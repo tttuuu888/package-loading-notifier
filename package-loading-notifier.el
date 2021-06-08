@@ -92,9 +92,15 @@ arguments R."
           (when (stringp file-name)
             (let ((ret (assoc-default file-name auto-mode-alist 'string-match)))
               (and (symbolp ret) (symbol-name ret)))))
-         (pkg
+         (pkg-with-mode
+          (when mode (intern mode)))
+         (pkg-without-mode
           (when mode
-            (intern (string-remove-suffix "-mode" mode)))))
+            (intern (string-remove-suffix "-mode" mode))))
+         (pkg
+          (if (member pkg-with-mode package-loading-notifier-packages)
+              pkg-with-mode
+            pkg-without-mode)))
     (if (not (member pkg package-loading-notifier-packages))
         (apply old r)
       (apply #'package-loading-notifier--notify pkg old r))))
