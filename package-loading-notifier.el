@@ -58,7 +58,8 @@
 (defun package-loading-notifier--notify (pkg old &rest r)
   "Notify a PKG is being loaded and execute OLD with rest arguments R."
   (let ((msg (capitalize (format package-loading-notifier-format pkg)))
-        (ovr (make-overlay (point) (point))))
+        (ovr (make-overlay (point) (point)))
+        (ret nil))
     (when (fboundp 'company-cancel) (company-cancel))
     (setq package-loading-notifier-packages
           (delq pkg package-loading-notifier-packages))
@@ -68,9 +69,10 @@
     (overlay-put ovr 'after-string
                  (propertize msg 'face 'package-loading-notifier-face))
     (redisplay)
-    (let ((ret (apply old r)))
-      (delete-overlay ovr)
-      ret)))
+    (unwind-protect
+        (setq ret (apply old r))
+      (delete-overlay ovr))
+    ret))
 
 (defun package-loading-notifier--require (old &rest r)
   "Notifier for `require' function.
