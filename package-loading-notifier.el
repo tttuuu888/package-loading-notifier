@@ -2,7 +2,7 @@
 
 ;; Author: SeungKi Kim <tttuuu888@gmail.com>
 ;; URL: https://github.com/tttuuu888/package-loading-notifier
-;; Version: 0.1.0
+;; Version: 0.3.0
 ;; Keywords: convenience faces config startup
 ;; Package-Requires: ((emacs "25"))
 
@@ -90,19 +90,12 @@ If the package is not a member of
 `package-loading-notifier-packages', just execute OLD with rest
 arguments R."
   (let* ((file-name (car r))
-         (mode
-          (when (stringp file-name)
-            (let ((ret (assoc-default file-name auto-mode-alist 'string-match)))
-              (and (symbolp ret) (symbol-name ret)))))
-         (pkg-with-mode
-          (when mode (intern mode)))
-         (pkg-without-mode
-          (when mode
-            (intern (string-remove-suffix "-mode" mode))))
-         (pkg
-          (if (member pkg-with-mode package-loading-notifier-packages)
-              pkg-with-mode
-            pkg-without-mode)))
+         (mode (when (stringp file-name)
+                 (assoc-default file-name auto-mode-alist 'string-match)))
+         (pkg (when (and mode (symbolp mode))
+                (plist-get (symbol-function mode) 'autoload)))
+         (pkg (when (stringp pkg)
+                (intern pkg))))
     (if (not (member pkg package-loading-notifier-packages))
         (apply old r)
       (apply #'package-loading-notifier--notify pkg old r))))
