@@ -60,7 +60,6 @@
   (let ((msg (capitalize (format package-loading-notifier-format pkg)))
         (ovr (make-overlay (point) (point)))
         (ret nil))
-    (when (fboundp 'company-cancel) (company-cancel))
     (setq package-loading-notifier-packages
           (delq pkg package-loading-notifier-packages))
     (unless package-loading-notifier-packages
