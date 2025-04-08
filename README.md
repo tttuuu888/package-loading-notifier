@@ -3,7 +3,7 @@
 
 `package-loading-notifier` notify when packages are loaded.
 
-![demo](https://gist.github.com/tttuuu888/267a8a56c207d725ea999e353646eec9/raw/b960dfcf9ac1e8c9330d9385368fcd4a2cfdc981/package-loading-notice.gif)
+![demo](https://gist.githubusercontent.com/tttuuu888/267a8a56c207d725ea999e353646eec9/raw/b960dfcf9ac1e8c9330d9385368fcd4a2cfdc981/package-loading-notice.gif)
 
 # Installation
 
